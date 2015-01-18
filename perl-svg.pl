@@ -17,6 +17,9 @@ my $svg = SVG->new(id => 'canvas', width => $pixels, height => $pixels);
 my $image = $svg->group(id=>'image');
 
 # See if we can get image
-my $c = $image->circle(cx=>0, cy=>0, r=>100, transform=>"translate($half,$half)");
+my $xv = [-200, 0, 200, 0];
+my $yv = [0, 200, 0, -200];
+my $points = $image->get_path(x=>$xv, y=> $yv, -type=>'polygon');
+my $c = $image->polygon(%$points, transform=>"translate($half, $half)");
 
 print $svg->xmlify;
