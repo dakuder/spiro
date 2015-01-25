@@ -63,14 +63,12 @@ $offset_y = 0;
 my $svg = SVG->new(id => 'canvas', width => $pixels, height => $pixels);
 my $image = $svg->group(id=>'image');
 
-# Outer loop, need to figure out how to input description
-for(my $i = 0; $i<4; $i++) {
-    $offset_y = $i * 16;
-    $scale_x = (1 + $i/10);
-    $scale_y = (1 + $i/10);
-    $theta = pi * (1/(1+$i));
+# Outer loop, reading parameters from a CSV
+while(<>) {
+    chomp;
+    my @params = split(',');
 
-# loop 
+# inner loop drawing a single hypocycloid or whater
     my @xs;
     my @ys;
 
