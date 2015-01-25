@@ -51,6 +51,10 @@ my $sigma=($R-$r)/$r;
 $stroke_width = 1;
 $pen_color = "rgb(0, 0,0)";
 $fill_color = "rgb(80,240,100)";
+$scale_x = 1;
+$scale_y = 1;
+$offset_x = 0;
+$offset_y = 0;
 
 # create base SVG canvas;
 my $svg = SVG->new(id => 'canvas', width => $pixels, height => $pixels);
@@ -58,22 +62,27 @@ my $image = $svg->group(id=>'image');
 
 # Outer loop, need to figure out how to input description
 for(my $i = 0; $i<4; $i++) {
-$p = (1.4-$i/7)* $r;
-# $phi = $i * pi/10;
+    $offset_x = $i * 16;
+    $scale_x = (1 + $i/10);
+    $scale_y = (1 + $i/10);
 
 # loop 
-my @xs;
-my @ys;
+    my @xs;
+    my @ys;
 
-for(my $t=0; $t<(2 * pi * $M); $t = $t + $step) {
-	my $x = ($R - $r) * cos($t) + $p * cos($sigma * $t + $phi);
-	my $y = ($R - $r) * sin($t) - $p * sin($sigma * $t + $phi);
-	push @xs, $x;
-	push @ys, $y;
-}
+    for(my $t=0; $t<(2 * pi * $M); $t = $t + $step) {
+	    my $x = ($R - $r) * cos($t) + $p * cos($sigma * $t + $phi);
+	    my $y = ($R - $r) * sin($t) - $p * sin($sigma * $t + $phi);
+
+	    my $xt = $scale_x * $x + $offset_x; 
+	    my $yt = $scale_y * $y + $offset_y; 
+
+	    push @xs, $xt;
+	    push @ys, $yt;
+    }
 
 # convert array of points to svg polygon
-my $points = $image->get_path(x=>\@xs, y=> \@ys, -type=>'polygon');
-my $c = $image->polygon(transform=>"translate(256, 256)", style=>"stroke: $pen_color; fill: $fill_color; stroke-width: $stroke_width", %$points ); 
+    my $points = $image->get_path(x=>\@xs, y=> \@ys, -type=>'polygon');
+    my $c = $image->polygon(transform=>"translate(256, 256)", style=>"stroke: $pen_color; fill: $fill_color; stroke-width: $stroke_width", %$points ); 
 }
 print $svg->xmlify;
