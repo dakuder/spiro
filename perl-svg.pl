@@ -53,6 +53,7 @@ $pen_color = "rgb(0, 0,0)";
 $fill_color = "rgb(80,240,100)";
 $scale_x = 1;
 $scale_y = 1;
+$theta = 0;
 $offset_x = 0;
 $offset_y = 0;
 
@@ -62,9 +63,10 @@ my $image = $svg->group(id=>'image');
 
 # Outer loop, need to figure out how to input description
 for(my $i = 0; $i<4; $i++) {
-    $offset_x = $i * 16;
+    $offset_y = $i * 16;
     $scale_x = (1 + $i/10);
     $scale_y = (1 + $i/10);
+    $theta = pi * (1/(1+$i));
 
 # loop 
     my @xs;
@@ -74,8 +76,10 @@ for(my $i = 0; $i<4; $i++) {
 	    my $x = ($R - $r) * cos($t) + $p * cos($sigma * $t + $phi);
 	    my $y = ($R - $r) * sin($t) - $p * sin($sigma * $t + $phi);
 
-	    my $xt = $scale_x * $x + $offset_x; 
-	    my $yt = $scale_y * $y + $offset_y; 
+	    my $c = cos($theta);
+	    my $s = sin($theta);
+	    my $xt = $scale_x * $c* $x + $s * $y + $offset_x; 
+	    my $yt = $scale_y * $c *$y - $s * $x + $offset_y; 
 
 	    push @xs, $xt;
 	    push @ys, $yt;
